@@ -23,8 +23,31 @@ jobs:
         flutter-version: '3.19.0'
         channel: 'stable'
 
-    - name: Install dependencies
-      run: flutter pub get
+    - name: Create Flutter Project Structure
+      run: |
+        flutter create . --org com.notwin.ia --project-name notwin_ia --platforms=android
+        mkdir -p lib
+        echo "Placeholder" > lib/main.dart
+
+    - name: Overwrite main.dart
+      run: |
+        cat << 'EOF' > lib/main.dart
+        import 'package:flutter/material.dart';
+
+        void main() => runApp(const NotwinIAApp());
+
+        class NotwinIAApp extends StatelessWidget {
+          const NotwinIAApp({super.key});
+          @override
+          Widget build(BuildContext context) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(brightness: Brightness.dark),
+              home: const Scaffold(body: Center(child: Text("notwin iA"))),
+            );
+          }
+        }
+        EOF
 
     - name: Build APK
       run: flutter build apk --release
